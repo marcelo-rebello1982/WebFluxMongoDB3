@@ -1,7 +1,7 @@
 package com.handler;
 
-import com.model.Student;
-import com.service.StudentService;
+import com.model.Author;
+import com.service.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -13,19 +13,20 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 
 @Component
-public class StudentHandler {
+public class AuthorHandler {
 
-    private StudentService studentService;
+    private AuthorService authorService;
 
-    public StudentHandler(StudentService studentService) {
-        this.studentService = studentService;
+    public AuthorHandler(AuthorService authorService) {
+
+        this.authorService = authorService;
     }
 
     public Mono<ServerResponse> findById(ServerRequest serverRequest) {
-        Mono<Student> studentMono = studentService.findStudentById(
-                Long.parseLong(serverRequest.pathVariable("id")));
-        return studentMono.flatMap(student -> ServerResponse.ok()
-                        .body(fromValue(student)))
+        Mono<Author> authorMono = authorService.findAuthorById(
+                serverRequest.pathVariable("id"));
+        return authorMono.flatMap(author -> ServerResponse.ok()
+                        .body(fromValue(author)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -33,33 +34,33 @@ public class StudentHandler {
         String name = serverRequest.queryParam("name").orElse(null);
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(studentService.findByName(name), Student.class);
+                .body(authorService.findByName(name), Author.class);
     }
 
     public Mono<ServerResponse> save(ServerRequest serverRequest) {
-        Mono<Student> studentMono = serverRequest.bodyToMono(Student.class);
-        return studentMono.flatMap(student ->
+        Mono<Author> authorMono = serverRequest.bodyToMono(Author.class);
+        return authorMono.flatMap(author ->
                 ServerResponse.status(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(studentService.save(student), Student.class));
+                        .body(authorService.save(author), Author.class));
 
     }
 
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
-        final long studentId = Long.parseLong(serverRequest.pathVariable("id"));
-        Mono<Student> studentMono = serverRequest.bodyToMono(Student.class);
+        final String authorId = serverRequest.pathVariable("id");
+        Mono<Author> authorMono = serverRequest.bodyToMono(Author.class);
 
-        return studentMono.flatMap(student ->
+        return authorMono.flatMap(author ->
                 ServerResponse.status(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(studentService.update(studentId, student), Student.class));
+                        .body(authorService.update(authorId, author), Author.class));
     }
 
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
-        final long studentId = Long.parseLong(serverRequest.pathVariable("id"));
-        return studentService
-                .findStudentById(studentId)
-                .flatMap(s -> ServerResponse.noContent().build(studentService.delete(s)))
+        String authorId = serverRequest.pathVariable("id");
+        return authorService
+                .findAuthorById(authorId)
+                .flatMap(author -> ServerResponse.noContent().build(authorService.delete(author)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 }

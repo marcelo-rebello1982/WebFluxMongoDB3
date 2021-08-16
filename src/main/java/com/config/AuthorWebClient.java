@@ -1,59 +1,59 @@
 package com.config;
 
-import com.model.Student;
+import com.model.Author;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class StudentWebClient {
+public class AuthorWebClient {
 
 
     WebClient client = WebClient.create("http://localhost:8080");
 
-    public Mono<Student> get(long id) {
+    public Mono<Author> get(String id) {
         return client
                 .get()
-                .uri("/students/" + id)
+                .uri("/author/" + id)
                 .headers(headers -> headers.setBasicAuth("user", "userpwd"))
                 .retrieve()
-                .bodyToMono(Student.class);
+                .bodyToMono(Author.class);
     }
 
-    public Flux<Student> getAll() {
+    public Flux<Author> findAll() {
         return client.get()
-                .uri("/students")
+                .uri("/author")
                 .headers(headers -> headers.setBasicAuth("user", "userpwd"))
                 .retrieve()
-                .bodyToFlux(Student.class);
+                .bodyToFlux(Author.class);
     }
 
-    public Flux<Student> findByName(String name) {
+    public Flux<Author> findByName(String name) {
         return client.get()
-                .uri(uriBuilder -> uriBuilder.path("/students")
+                .uri(uriBuilder -> uriBuilder.path("/author")
                         .queryParam("name", name)
                         .build())
                 .headers(headers -> headers.setBasicAuth("user", "userpwd"))
                 .retrieve()
-                .bodyToFlux(Student.class);
+                .bodyToFlux(Author.class);
     }
 
-    public Mono<Student> create(Student s) {
+    public Mono<Author> save(Author a) {
         return client.post()
-                .uri("/students")
+                .uri("/author")
                 .headers(headers -> headers.setBasicAuth("admin", "adminpwd"))
-                .body(Mono.just(s), Student.class)
+                .body(Mono.just(a), Author.class)
                 .retrieve()
-                .bodyToMono(Student.class);
+                .bodyToMono(Author.class);
     }
 
-    public Mono<Student> update(Student student) {
+    public Mono<Author> update(Author author) {
         return client
                 .put()
-                .uri("/students/" + student.getId())
+                .uri("/author/" + author.getId())
                 .headers(headers -> headers.setBasicAuth("admin", "adminpwd"))
-                .body(Mono.just(student), Student.class)
+                .body(Mono.just(author), Author.class)
                 .retrieve()
-                .bodyToMono(Student.class);
+                .bodyToMono(Author.class);
     }
 
     public Mono<Void> delete(long id) {
