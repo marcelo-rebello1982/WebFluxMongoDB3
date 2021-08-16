@@ -17,7 +17,7 @@ public class AuthorRouter  {
     public RouterFunction<ServerResponse> routerFunction(AuthorHandler authorHandler) {
         return RouterFunctions
                 .route(GET("/author/{id:[0-9]+}").and(accept(APPLICATION_JSON)), authorHandler::findById)
-                .andRoute(GET("/author").and(accept(APPLICATION_JSON)), authorHandler::findAll)
+                .andRoute(GET("/author").and(accept(APPLICATION_JSON)), authorHandler::findByName)
                 .andRoute(POST("/author").and(accept(APPLICATION_JSON)), authorHandler::save)
                 .andRoute(PUT("author/{id:[0-9]+}").and(accept(APPLICATION_JSON)), authorHandler::update)
                 .andRoute(DELETE("/author/{id:[0-9]+}").and(accept(APPLICATION_JSON)), authorHandler::delete);

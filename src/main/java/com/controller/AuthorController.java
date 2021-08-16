@@ -11,11 +11,15 @@ import reactor.core.publisher.Mono;
 
 
 @RestController
-@RequestMapping()
 public class AuthorController {
 
     @Autowired
     private AuthorService authorService;
+
+    @GetMapping("author/findAll")
+    public Flux<Author> findAll() {
+        return authorService.findAll();
+    }
 
     @GetMapping("/findByName")
     public Flux<Author> findByName(@RequestParam(name = "name", required = false) String name) {

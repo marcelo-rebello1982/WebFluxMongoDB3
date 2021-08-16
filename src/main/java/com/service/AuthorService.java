@@ -13,7 +13,8 @@ public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
 
-    public AuthorService() {
+    public Flux<Author> findAll() {
+        return authorRepository.findAll();
     }
 
     public Flux<Author> findByName(String name) {

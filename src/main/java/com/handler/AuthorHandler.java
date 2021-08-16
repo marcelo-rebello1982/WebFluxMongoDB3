@@ -22,19 +22,19 @@ public class AuthorHandler {
         this.authorService = authorService;
     }
 
+    public Mono<ServerResponse> findByName(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").orElse(null);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(authorService.findByName(name), Author.class);
+    }
+
     public Mono<ServerResponse> findById(ServerRequest serverRequest) {
         Mono<Author> authorMono = authorService.findAuthorById(
                 serverRequest.pathVariable("id"));
         return authorMono.flatMap(author -> ServerResponse.ok()
                         .body(fromValue(author)))
                 .switchIfEmpty(ServerResponse.notFound().build());
-    }
-
-    public Mono<ServerResponse> findAll(ServerRequest serverRequest) {
-        String name = serverRequest.queryParam("name").orElse(null);
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(authorService.findByName(name), Author.class);
     }
 
     public Mono<ServerResponse> save(ServerRequest serverRequest) {
