@@ -15,7 +15,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 @Component
 public class AuthorHandler {
 
-    private AuthorService authorService;
+    private final AuthorService authorService;
 
     public AuthorHandler(AuthorService authorService) {
 

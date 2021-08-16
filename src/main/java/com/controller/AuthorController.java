@@ -17,16 +17,16 @@ public class AuthorController {
     @Autowired
     private AuthorService authorService;
 
-    @GetMapping("/student/{id}")
+    @GetMapping("/findByName")
+    public Flux<Author> findByName(@RequestParam(name = "name", required = false) String name) {
+        return authorService.findByName(name);
+    }
+
+    @GetMapping("/author/{id}")
     public Mono<ResponseEntity<Author>> findById(@PathVariable String id) {
         return authorService.findAuthorById(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/findAll")
-    public Flux<Author> findAll(@RequestParam(name = "name", required = false) String name) {
-        return authorService.findByName(name);
     }
 
     @PostMapping
